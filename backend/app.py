@@ -18,7 +18,8 @@ import pytesseract
 from dotenv import load_dotenv
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
-
+from flask import send_from_directory
+import os
 
 CURRENT_DIR = Path(__file__).resolve().parent
 PROJECT_ROOT = CURRENT_DIR.parent
@@ -3956,6 +3957,13 @@ def history_ask_message_detail(ask_message_id):
 def health():
     return jsonify({"status": "ok"})
 
-
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>')
+def serve_react(path):
+    if path != "" and os.path.exists(os.path.join('frontend/build', path)):
+        return send_from_directory('frontend/build', path)
+    else:
+        return send_from_directory('frontend/build', 'index.html')
+    
 if __name__ == "__main__":
     app.run(debug=True, use_reloader=False)
