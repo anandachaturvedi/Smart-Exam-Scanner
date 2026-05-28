@@ -1,0 +1,15 @@
+.env
+venv/
+.venv/
+node_modules/
+__pycache__/
+*.log
+*.pyc
+.selenium-profile/
+.selenium-runs/
+
+smart-exam-scanner/.env
+smart-exam-scanner/.venv/
+smart-exam-scanner/node_modules/
+smart-exam-scanner/.selenium-profile/
+smart-exam-scanner/.selenium-runs/
