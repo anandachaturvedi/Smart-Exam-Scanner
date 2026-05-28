@@ -3957,14 +3957,21 @@ def history_ask_message_detail(ask_message_id):
 def health():
     return jsonify({"status": "ok"})
 
-@app.route('/', defaults={'path': ''})
-@app.route('/<path:path>')
-def serve_react(path):
-    build_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'frontend', 'build'))
-    requested = os.path.join(build_dir, path)
-    if path and os.path.isfile(requested):
-        return send_from_directory(build_dir, path)
-    return send_from_directory(build_dir, 'index.html')
+@app.route('/')
+def serve_react():
+    return send_from_directory('../frontend/build', 'index.html')
+
+@app.route('/static/js/<path:filename>')
+def serve_js(filename):
+    return send_from_directory('../frontend/build/static/js', filename)
+
+@app.route('/static/css/<path:filename>')
+def serve_css(filename):
+    return send_from_directory('../frontend/build/static/css', filename)
+
+@app.route('/favicon.svg')
+def serve_favicon():
+    return send_from_directory('../frontend/build', 'favicon.svg')
 
 if __name__ == "__main__":
     app.run(debug=True, use_reloader=False)
