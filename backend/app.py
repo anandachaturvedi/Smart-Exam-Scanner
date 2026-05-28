@@ -3961,7 +3961,8 @@ def health():
 @app.route('/<path:path>')
 def serve_react(path):
     build_dir = os.path.join(os.path.dirname(__file__), '..', 'frontend', 'build')
-    if path != "" and os.path.exists(os.path.join(build_dir, path)):
+    full_path = os.path.join(build_dir, path)
+    if path != "" and os.path.exists(full_path):
         return send_from_directory(build_dir, path)
     else:
         return send_from_directory(build_dir, 'index.html')
