@@ -14,7 +14,6 @@ from urllib.parse import parse_qs, quote_plus, unquote, urljoin, urlparse
 from urllib.request import Request, urlopen
 from flask import Flask, jsonify, request
 from PIL import Image, ImageOps, UnidentifiedImageError
-import pytesseract
 from dotenv import load_dotenv
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
