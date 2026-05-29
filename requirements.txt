@@ -34,7 +34,6 @@ pydantic_core==2.46.3
 PyMuPDF==1.27.2.3
 pypdf==6.10.2
 PySocks==1.7.1
-pytesseract==0.3.13
 python-dotenv==1.2.2
 redis==5.2.1
 selenium==4.43.0

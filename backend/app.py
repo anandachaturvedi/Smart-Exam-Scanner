@@ -1787,32 +1787,36 @@ def preprocess_ocr_image(image):
 
 
 def ocr_image_with_fallbacks(image):
-    candidates = [
-        ImageOps.autocontrast(ImageOps.grayscale(image)),
-        preprocess_ocr_image(image),
-    ]
-    configs = [
-        "--oem 3 --psm 6",
-        "--oem 3 --psm 4",
-        "--oem 3 --psm 11",
-    ]
-
-    best_text = ""
-    for candidate in candidates:
-        for config in configs:
-            try:
-                text = pytesseract.image_to_string(candidate, config=config)
-            except Exception:
-                text = ""
-            if len(text.strip()) > len(best_text.strip()):
-                best_text = text
-
-    return best_text
-
+    try:
+        client, model = get_llm_client()
+        buffered = BytesIO()
+        image.save(buffered, format="PNG")
+        img_base64 = base64.b64encode(buffered.getvalue()).decode("utf-8")
+        response = client.chat.completions.create(
+            model=model,
+            messages=[
+                {
+                    "role": "user",
+                    "content": [
+                        {
+                            "type": "image_url",
+                            "image_url": {"url": f"data:image/png;base64,{img_base64}"},
+                        },
+                        {
+                            "type": "text",
+                            "text": "Extract all text from this image exactly as written. Return only the extracted text, no commentary.",
+                        },
+                    ],
+                }
+            ],
+            max_tokens=2000,
+        )
+        return extract_message_content(response.choices[0].message) if response.choices else ""
+    except Exception:
+        return ""
 
 def normalize_spaces(value):
     return re.sub(r"\s+", " ", (value or "")).strip()
-
 
 def parse_class_and_year(section_text):
     normalized = normalize_spaces(section_text)
